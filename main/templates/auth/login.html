@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card shadow-sm p-4" style="width: 100%; max-width: 400px; border-radius: 12px; border: 1px solid #e0e0e0;">
+        <h2 class="mb-4 text-center fw-bold" style="color: #FFC107;">Connexion</h2>
+        
+        {% if form.errors %}
+        <div class="alert alert-danger py-2" role="alert" style="font-size: 0.9rem;">
+            Nom d'utilisateur ou mot de passe incorrect.
+        </div>
+        {% endif %}
+
+        <form method="POST" novalidate>
+            {% csrf_token %}
+        <div class="mb-3">
+    <label for="username" class="form-label fw-semibold">Nom d'utilisateur</label>
+    <input type="text" name="username" 
+           class="form-control form-control-lg rounded-3 shadow-sm" 
+           placeholder="Entrez votre nom" required>
+</div>
+<div class="mb-3">
+    <label for="password" class="form-label fw-semibold">Mot de passe</label>
+    <input type="password" name="password" 
+           class="form-control form-control-lg rounded-3 shadow-sm" 
+           placeholder="Entrez votre mot de passe" required>
+</div>
+
+            
+            <div class="d-flex justify-content-between mb-3" style="font-size: 0.85rem;">
+                <a href="{% url 'password_reset' %}">Mot de passe oublié ?</a>
+                <a href="{% url 'signup' %}">Créer un compte</a>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 fw-bold py-2 rounded-3 shadow-sm" style="font-size: 1rem; letter-spacing: 0.5px;background-color: #D9B300; color: #212529;border: none;">Se connecter</button>
+        </form>
+    </div>
+</div>
+<style>
+input, select {
+    background-color: #FFF9E6;
+    border: 1px solid #e0e0e0;
+    border-radius: 0.5rem;
+    padding: 0.65rem 0.75rem;
+    font-size: 1rem;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    width: 100%;
+}
+</style>
+{% endblock %}

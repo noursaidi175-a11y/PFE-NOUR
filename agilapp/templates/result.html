@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Résultat de la Prédiction{% endblock %}
+
+{% block content %}
+<div class="text-center my-5 p-4 border rounded shadow-sm" style="background-color: #fff;">
+  <h1 class="mb-4" style="color: #D9B300;">Résultat de la Prédiction</h1>
+  
+  <p style="font-size: 1.2rem;">
+    L'employé est probablement : <strong>{{ prediction }}</strong>
+  </p>
+  
+  <p style="font-size: 1.1rem;">
+    Probabilité de départ : <span class="fw-bold">{{ probability }}%</span>
+  </p>
+  
+  <a href="{% url 'form_predict_turnover' %}" class="btn btn-sn mt-4">Faire une autre prédiction</a>
+</div>
+{% endblock %}
