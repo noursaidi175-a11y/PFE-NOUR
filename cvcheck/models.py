@@ -8,9 +8,10 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 
-nltk.download('punkt')
-nltk.download('stopwords')
-nltk.download('wordnet')
+# NOTE: do not run nltk.download() at import time. That forces downloads to
+# create directories like C:\nltk_data during simple management commands
+# (makemigrations, collectstatic, etc.). Instead, attempt to use NLTK
+# resources and fall back to safe alternatives if they're not present.
 
 class CVRecommender:
     def __init__(self):
@@ -19,12 +20,31 @@ class CVRecommender:
         self.vectorizer = joblib.load(os.path.join(base_path, 'tfidf_vectorizer.pkl'))
 
     def preprocess(self, text):
-        tokens = word_tokenize(text.lower())
+        # Tokenize: prefer NLTK's punkt tokenizer, but fall back to a regex
+        # tokenizer if punkt is unavailable to avoid triggering downloads.
+        try:
+            tokens = word_tokenize(text.lower())
+        except LookupError:
+            import re
+            tokens = re.findall(r"\b\w+\b", text.lower())
+
         tokens = [t for t in tokens if t not in string.punctuation]
-        stop_words = set(stopwords.words('english')).union(set(stopwords.words('french')))
+
+        # Stopwords: attempt to use NLTK stopwords; if missing, use empty set
+        try:
+            stop_words = set(stopwords.words('english')).union(set(stopwords.words('french')))
+        except LookupError:
+            stop_words = set()
+
         tokens = [t for t in tokens if t not in stop_words]
-        lemmatizer = WordNetLemmatizer()
-        tokens = [lemmatizer.lemmatize(t) for t in tokens]
+
+        # Lemmatize if WordNet data is present; otherwise skip lemmatization.
+        try:
+            lemmatizer = WordNetLemmatizer()
+            tokens = [lemmatizer.lemmatize(t) for t in tokens]
+        except LookupError:
+            pass
+
         return ' '.join(tokens)
 
     def extract_keywords(self, text, threshold=0.001):
