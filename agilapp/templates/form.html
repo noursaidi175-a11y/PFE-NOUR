@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% block title %}Prédiction de Turnover{% endblock %}
+
+{% block content %}
+<div class="container py-4" style="max-width: 600px;">
+    <h1 class="mb-4 text-center" style="color: #D9B300; font-weight: 600;">Prédiction de Turnover</h1>
+
+    <form method="post" novalidate class="bg-light p-4 rounded shadow-sm border">
+        {% csrf_token %}
+
+        <!-- SEXE -->
+        <div class="mb-3">
+            <label for="sexe" class="form-label fw-semibold">SEXE :</label>
+            <select name="sexe" id="sexe" class="form-select" required>
+                <option value="" disabled selected>--Choisissez--</option>
+                {% for item in sexes %}
+                <option value="{{ item }}">{{ item }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- SENS -->
+        <div class="mb-3">
+            <label for="sens" class="form-label fw-semibold">SENS :</label>
+            <select name="sens" id="sens" class="form-select" required>
+                <option value="" disabled selected>--Choisissez--</option>
+                {% for item in sens %}
+                <option value="{{ item }}">{{ item }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- GEO_DSG -->
+        <div class="mb-3">
+            <label for="geo" class="form-label fw-semibold">GEO_DSG :</label>
+            <select name="geo" id="geo" class="form-select" required>
+                <option value="" disabled selected>--Choisissez--</option>
+                {% for item in geo %}
+                <option value="{{ item }}">{{ item }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- UFA -->
+        <div class="mb-3">
+            <label for="ufa" class="form-label fw-semibold">LIB_UFA :</label>
+            <select name="ufa" id="ufa" class="form-select" required>
+                <option value="" disabled selected>--Choisissez--</option>
+                {% for item in ufa %}
+                <option value="{{ item }}">{{ item }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- COLLEGE -->
+        <div class="mb-3">
+            <label for="college" class="form-label fw-semibold">COLLEGE :</label>
+            <select name="college" id="college" class="form-select" required>
+                <option value="" disabled selected>--Choisissez--</option>
+                {% for item in college %}
+                <option value="{{ item }}">{{ item }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- ECHELLE -->
+        <div class="mb-3">
+            <label for="echelle" class="form-label fw-semibold">ECHELLE :</label>
+            <select name="echelle" id="echelle" class="form-select" required>
+                <option value="" disabled selected>--Choisissez--</option>
+                {% for item in echelle %}
+                <option value="{{ item }}">{{ item }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- FONCTION -->
+        <div class="mb-3">
+            <label for="fonction" class="form-label fw-semibold">FONCTION :</label>
+            <select name="fonction" id="fonction" class="form-select" required>
+                <option value="" disabled selected>--Choisissez--</option>
+                {% for item in fonction %}
+                <option value="{{ item }}">{{ item }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- EMPLOI -->
+        <div class="mb-3">
+            <label for="emploi" class="form-label fw-semibold">EMPLOI :</label>
+            <select name="emploi" id="emploi" class="form-select" required>
+                <option value="" disabled selected>--Choisissez--</option>
+                {% for item in emploi %}
+                <option value="{{ item }}">{{ item }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit" class="btn w-100" style="background-color: #D9B300; color: #000; font-weight: 600;">
+            Prédire
+        </button>
+    </form>
+</div>
+
+<!-- Modal Bootstrap -->
+<div class="modal fade" id="resultModal" tabindex="-1" aria-labelledby="resultModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header" style="background-color: #D9B300;">
+                <h5 class="modal-title text-dark fw-semibold" id="resultModalLabel">Résultat de la Prédiction</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body" id="modalBodyContent">
+                <!-- Résultat injecté ici -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn" style="background-color: #D9B300; color: #000;">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.querySelector('form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+
+    fetch("{% url 'form_predict_turnover' %}", {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
+        },
+        body: formData,
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('modalBodyContent').innerHTML = data.html;
+        let modal = new bootstrap.Modal(document.getElementById('resultModal'));
+        modal.show();
+    })
+    .catch(() => alert("Erreur lors de la prédiction."));
+});
+</script>
+{% endblock %}

@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block title %}Accueil - SNDP Agil{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <!-- Hero -->
+  <div class="p-5 mb-4 bg-light rounded-3 shadow" data-aos="fade-down">
+    <h1 class="display-6 fw-bold">Bienvenue sur la plateforme BI & IA de la SNDP Agil</h1>
+    <p class="col-md-8 fs-5">Explorez vos modèles d’intelligence artificielle, visualisez les analyses et accédez aux tableaux de bord décisionnels.</p>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="row mb-4">
+    <div class="col-md-4" data-aos="zoom-in">
+      <div class="card text-center shadow-sm p-3">
+        <h6 class="fw-bold text-muted">Turnover Actuel</h6>
+        <h2 class="fw-bold text-warning">12%</h2>
+      </div>
+    </div>
+    <div class="col-md-4" data-aos="zoom-in" data-aos-delay="100">
+      <div class="card text-center shadow-sm p-3">
+        <h6 class="fw-bold text-muted">CV Match</h6>
+        <h2 class="fw-bold text-success">78%</h2>
+      </div>
+    </div>
+    <div class="col-md-4" data-aos="zoom-in" data-aos-delay="200">
+      <div class="card text-center shadow-sm p-3">
+        <h6 class="fw-bold text-muted">Alertes Anomalies</h6>
+        <h2 class="fw-bold text-danger">5</h2>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modules Cards -->
+  <div class="row g-4">
+    <div class="col-md-6" data-aos="fade-up">
+      <div class="card h-100 shadow-lg border-0 p-4">
+        <i class="bi bi-bar-chart-line display-5 text-warning mb-3"></i>
+        <h5 class="fw-bold">Prédiction du Turnover</h5>
+        <p class="text-muted">Analyse prédictive des départs potentiels grâce au Machine Learning.</p>
+        <a href="{% url 'form_predict_turnover' %}" class="btn btn-sn">Lancer</a>
+      </div>
+    </div>
+    <div class="col-md-6" data-aos="fade-up" data-aos-delay="200">
+      <div class="card h-100 shadow-lg border-0 p-4">
+        <i class="bi bi-file-earmark-person display-5 text-warning mb-3"></i>
+        <h5 class="fw-bold">Matching CV</h5>
+        <p class="text-muted">Évaluez automatiquement la compatibilité entre un CV et un poste.</p>
+        <a href="{% url 'cv_check' %}" class="btn btn-sn">Tester</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Graphique -->
+  <div class="mt-5" data-aos="fade-up">
+    <h4 class="fw-bold text-center mb-3">Évolution du Turnover</h4>
+    <canvas id="chartTurnover"></canvas>
+    <a href="{% url 'dash' %}" class="btn btn-sn">Aller au Dashboard</a>
+  </div>
+
+  <!-- Chatbot -->
+  <div class="mt-5" data-aos="fade-up">
+    <h4 class="fw-bold">🤖 Agil Chatbot </h4>
+    <div class="card shadow-sm p-3">
+      <div id="chat-box" style="height:200px; overflow-y:auto; background:#f1f1f1; border-radius:6px; padding:10px;">
+        <p><strong>Bot:</strong> Bonjour 👋, que voulez-vous analyser aujourd’hui ?</p>
+      </div>
+      <div class="input-group mt-3">
+        <input type="text" id="chat-input" class="form-control" placeholder="Écrire un message...">
+        <button class="btn btn-sn" onclick="sendMessage()">Envoyer</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const ctx = document.getElementById('chartTurnover');
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai'],
+    datasets: [{
+      label: 'Turnover (%)',
+      data: [5, 7, 6, 9, 8],
+      borderColor: '#D9B300',
+      backgroundColor: 'rgba(217,179,0,0.3)',
+      tension: 0.4
+    }]
+  }
+});
+
+// Fake Chatbot
+function sendMessage() {
+  let input = document.getElementById("chat-input");
+  let box = document.getElementById("chat-box");
+  if (input.value.trim() === "") return;
+  box.innerHTML += `<p><strong>Vous:</strong> ${input.value}</p>`;
+  setTimeout(() => {
+    box.innerHTML += `<p><strong>Bot:</strong> Analyse en cours... ✅</p>`;
+    box.scrollTop = box.scrollHeight;
+  }, 1000);
+  input.value = "";
+}
+</script>
+{% endblock %}

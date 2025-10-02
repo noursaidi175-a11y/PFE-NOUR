@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Vérification de CV{% endblock %}
+
+{% block content %}
+<div class="container py-4" style="max-width: 500px;">
+    <h2 class="text-center mb-4" style="color: #D9B300; font-weight: 600;">Vérification de CV</h2>
+
+    <form method="post" enctype="multipart/form-data" class="bg-light p-4 rounded shadow-sm border">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="cv" class="form-label fw-semibold">Uploader votre CV (PDF) :</label>
+            <input type="file" name="cv" id="cv" accept=".pdf" class="form-control" required>
+        </div>
+        <button type="submit" class="btn w-100" style="background-color: #D9B300; color: #000; font-weight: 600;">
+            Vérifier
+        </button>
+    </form>
+
+    {% if result %}
+    <div class="alert alert-success mt-4 rounded shadow-sm" role="alert">
+        <h5 class="fw-semibold">Résultat : {{ result }}</h5>
+        {% if keywords %}
+        <p><strong>Mots-clés détectés :</strong> {{ keywords|join:", " }}</p>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

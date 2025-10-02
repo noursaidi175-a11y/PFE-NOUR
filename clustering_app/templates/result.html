@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Résultat du Clustering{% endblock %}
+{% block content %}
+<h2>Résultat du clustering</h2>
+<div class="table-responsive mt-3">
+  {{ tables|safe }}
+</div>
+<a href="{% url 'upload_page' %}" class="btn btn-sn mt-4">Retour</a>
+{% endblock %}
